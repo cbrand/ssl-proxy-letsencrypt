@@ -39,6 +39,13 @@ if [ -n "${ENABLE_FRAMES_SAMEORIGIN+1}" ] && [ "${ENABLE_FRAMES_SAMEORIGIN,,}" =
   sed -i "s/add_header X-Frame-Options DENY;/add_header X-Frame-Options SAMEORIGIN;/g;" /etc/nginx/conf.d/proxy.conf
 fi
 
+# If hosts should be faked
+if [ -n "${DISABLE_HOST_PROXY+1}" ] && [ "${DISABLE_HOST_PROXY,,}" = "true" ]; then
+  echo "Enabling frames from the same origin..."
+  sed -i "s/proxy_set_header        Host $host;/#proxy_set_header        Host $host;/g;" /etc/nginx/conf.d/proxy.conf
+  sed -i "s/proxy_set_header        X-Forwarded-Host $http_host;/#proxy_set_header        X-Forwarded-Host $http_host;" /etc/nginx/conf.d/proxy.conf
+fi
+
 # If the SERVICE_HOST_ENV_NAME and SERVICE_PORT_ENV_NAME vars are provided,
 # there are two options:
 #  - Option 1:
