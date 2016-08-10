@@ -42,8 +42,14 @@ fi
 # If hosts should be faked
 if [ -n "${DISABLE_HOST_PROXY+1}" ] && [ "${DISABLE_HOST_PROXY,,}" = "true" ]; then
   echo "Enabling frames from the same origin..."
-  sed -i "s/proxy_set_header        Host $host;/#proxy_set_header        Host $host;/g;" /etc/nginx/conf.d/proxy.conf
-  sed -i "s/proxy_set_header        X-Forwarded-Host $http_host;/#proxy_set_header        X-Forwarded-Host $http_host;" /etc/nginx/conf.d/proxy.conf
+  sed -i "s/proxy_set_header.*Host $host;/#proxy_set_header        Host $host;/g;" /etc/nginx/conf.d/proxy.conf
+  sed -i "s/proxy_set_header        X-Forwarded-Host $http_host;/#proxy_set_header        X-Forwarded-Host $http_host;/g" /etc/nginx/conf.d/proxy.conf
+fi
+
+# If the upstream is ssl secured
+if [ -n "${ENABLE_UPSTREAM_SSL+1}" ] && [ "${ENABLE_UPSTREAM_SSL,,}" = "true" ]; then
+  echo "Accessing the upstream server via (https)"
+  sed -i "s/http:\/\/target_service;/https:\/\/target_service;/g;" /etc/nginx/conf.d/proxy.conf
 fi
 
 # If the SERVICE_HOST_ENV_NAME and SERVICE_PORT_ENV_NAME vars are provided,
