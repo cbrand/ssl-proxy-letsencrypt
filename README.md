@@ -181,3 +181,15 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
       -v /path/to/secrets/htpasswd:/etc/secrets/htpasswd \
       nginx-ssl-proxy
     ```
+
+5. **Proxy to HTTPs endpoint**
+ 
+    It might be necessary to forward an already SSL protected stream.
+    To enable an upstream HTTPs endpoint the environment variable
+    `ENABLE_UPSTREAM_SSL` has to be set to `true`.
+    
+    This will then configure the proxy to terminate an incoming SSL
+    connection and rebuild a new one with the requested certificate.
+    Of course, when the environment variable is set you also have
+    to specify the port for the HTTPS connection (usually 443) in the
+    `TARGET_SERVICE` configuration.
