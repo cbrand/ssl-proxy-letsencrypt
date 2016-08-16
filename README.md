@@ -193,3 +193,12 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     Of course, when the environment variable is set you also have
     to specify the port for the HTTPS connection (usually 443) in the
     `TARGET_SERVICE` configuration.
+
+6. **Additional configuration**
+
+    If you want to pass additional configuration to the docker container
+    you can do so by passing a base64 encoded file content to the
+    `ADDITIONAL_NGINX_CONFIG` variable. This will unpack and include
+    it into the `location` proxy directive. This is especially useful
+    if you want to change the underlying data via the `sub_filter`
+    directive.
