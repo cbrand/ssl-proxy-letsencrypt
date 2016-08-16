@@ -73,6 +73,10 @@ if [ -n "${SERVICE_PORT_ENV_NAME+1}" ]; then
   # SERVICE_PORT_ENV_NAME has the port value
   TARGET_SERVICE="$TARGET_SERVICE:${!SERVICE_PORT_ENV_NAME:=$SERVICE_PORT_ENV_NAME}"
 fi
+if [ -n "${ADDITIONAL_NGINX_CONFIG+1}" ]; then
+  echo $ADDITIONAL_NGINX_CONFIG | base64 --decode > /etc/nginx/conf.d/additional.conf
+  sed -i "s/\#additional_config_marker/include \/etc\/nginx\/conf.d\/additional.conf/g;" /etc/nginx/conf.d/proxy.conf
+fi
 
 # Tell nginx the address and port of the service to proxy to
 sed -i "s/{{TARGET_SERVICE}}/${TARGET_SERVICE}/g;" /etc/nginx/conf.d/proxy.conf
