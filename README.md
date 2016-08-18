@@ -144,6 +144,10 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
       -v /path/to/secrets/htpasswd:/etc/secrets/htpasswd \
       nginx-ssl-proxy
     ```
+    
+    If you are running in an environment where file based acces sin this regard
+    is not possible. You can also specify a htpasswd content via the `HTPASSWD_CONTENT`
+    environment variable (in base64). It will be pushed on build time to the correct location.
 
 4. **Enabling frames**
 

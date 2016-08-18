@@ -27,6 +27,12 @@ if [ -n "${ENABLE_BASIC_AUTH+1}" ] && [ "${ENABLE_BASIC_AUTH,,}" = "true" ]; the
   sed -i "s/#auth_basic/auth_basic/g;" /etc/nginx/conf.d/proxy.conf
 fi
 
+# If a htpasswd content is provided, put the content of the files to /etc/secrets/htpasswd
+if [ -n "${HTPASSWD_CONTENT+1}" ]; then
+  echo "Adding htpasswd file"
+  echo $HTPASSWD_CONTENT | base64 --decode > /etc/secrets/htpasswd
+fi
+
 # If frames should be allowed
 if [ -n "${ENABLE_FRAMES+1}" ] && [ "${ENABLE_FRAMES,,}" = "true" ]; then
   echo "Enabling frames..."
