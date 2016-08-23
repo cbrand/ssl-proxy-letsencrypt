@@ -206,3 +206,8 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     it into the `location` proxy directive. This is especially useful
     if you want to change the underlying data via the `sub_filter`
     directive.
+
+7. **NGINX reload**
+    In some proxy environments it might be necessary to periodically reload
+    and thus reset the TCP state of nginx. This can be done by setting the
+    `ENABLE_PERIODIC_NGINX_RELOAD` to `true`.
