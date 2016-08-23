@@ -60,6 +60,15 @@ if [ -n "${ENABLE_UPSTREAM_SSL+1}" ] && [ "${ENABLE_UPSTREAM_SSL,,}" = "true" ];
   sed -i "s/http:\/\/target_service;/https:\/\/target_service;/g;" /etc/nginx/conf.d/proxy.conf
 fi
 
+# If a periodic reload should be implemented
+if [ -n "${ENABLE_PERIODIC_NGINX_RELOAD+1}" ] && [ "${ENABLE_PERIODIC_NGINX_RELOAD,,}" = "true" ]; then
+  echo "Enabling periodic reloads of nginx"
+  cron -f &
+  echo "0 */6 * * * /etc/init.d/nginx reload" > /root/nginx-reload
+  chmod +x /root/nginx-reload
+  crontab /root/nginx-reload
+fi
+
 # If the SERVICE_HOST_ENV_NAME and SERVICE_PORT_ENV_NAME vars are provided,
 # there are two options:
 #  - Option 1:
