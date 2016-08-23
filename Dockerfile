@@ -40,6 +40,8 @@ RUN cd /opt/letsencrypt \
 
 RUN ln -s /root/.local/share/letsencrypt/bin/letsencrypt /usr/local/bin/letsencrypt
 
+RUN apt-get update && apt-get install -y cron
+
 # Commented out because we don't really want defaults
 #ENV cert_domains
 #ENV cert_email
