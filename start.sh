@@ -49,7 +49,7 @@ fi
 
 # If hosts should be faked
 if [ -n "${DISABLE_HOST_PROXY+1}" ] && [ "${DISABLE_HOST_PROXY,,}" = "true" ]; then
-  echo "Enabling frames from the same origin..."
+  echo "Disabling the indication of the host to the upstream backend."
   sed -i "s/proxy_set_header.*Host $host;/#proxy_set_header        Host $host;/g;" /etc/nginx/conf.d/proxy.conf
   sed -i "s/proxy_set_header        X-Forwarded-Host $http_host;/#proxy_set_header        X-Forwarded-Host $http_host;/g" /etc/nginx/conf.d/proxy.conf
 fi
