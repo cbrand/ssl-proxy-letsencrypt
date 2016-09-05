@@ -24,10 +24,8 @@ if [ -n "${LETSENCRYPT_ENDPOINT+1}" ]; then
 fi
 
 # Renewal of letsencrypt data
-/usr/local/bin/letsencrypt certonly \
-  --text --renew-by-default --agree-tos --webroot \
-  --webroot-path /usr/share/nginx/proxy-root \
-  $domain_args \
-  --email=$EMAIL
+/usr/local/bin/letsencrypt renew \
+  --text --agree-tos --webroot \
+  --webroot-path /usr/share/nginx/proxy-root
 
 /etc/init.d/nginx reload
