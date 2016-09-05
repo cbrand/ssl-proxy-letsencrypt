@@ -211,3 +211,10 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     In some proxy environments it might be necessary to periodically reload
     and thus reset the TCP state of nginx. This can be done by setting the
     `ENABLE_PERIODIC_NGINX_RELOAD` to `true`.
+
+8. **Certificate renewal**
+    The certificates are checked for renewal on a daily basis. To not request
+    renewal checks at the same time the cronjob is randomly executed somewhere
+    between 1:00 to 5:59 local time. If no certificate renewal should be
+    requested you can disable this behavior by setting the environment variable
+    `NO_CERT_REFRESH` to `true`.
