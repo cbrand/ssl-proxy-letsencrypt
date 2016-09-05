@@ -29,3 +29,5 @@ fi
   --webroot-path /usr/share/nginx/proxy-root \
   $domain_args \
   --email=$EMAIL
+
+/etc/init.d/nginx reload
