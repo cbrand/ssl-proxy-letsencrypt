@@ -17,7 +17,7 @@
 
 FROM nginx
 
-MAINTAINER Evan Brown <evanbrown@google.com>
+MAINTAINER Christoph Brand
 
 RUN rm /etc/nginx/conf.d/*.conf
 
@@ -42,9 +42,12 @@ RUN ln -s /root/.local/share/letsencrypt/bin/letsencrypt /usr/local/bin/letsencr
 
 RUN apt-get update && apt-get install -y cron
 
+RUN mkdir -p /usr/share/nginx/proxy-root
+
 # Commented out because we don't really want defaults
 #ENV cert_domains
 #ENV cert_email
 #ENV LETSENCRYPT_ENDPOINT
 
 ADD start-cert.sh /usr/src/
+ADD renew-cert.sh /usr/src/
