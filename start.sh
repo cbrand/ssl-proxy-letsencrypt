@@ -64,7 +64,7 @@ fi
 if [ -n "${ENABLE_PERIODIC_NGINX_RELOAD+1}" ] && [ "${ENABLE_PERIODIC_NGINX_RELOAD,,}" = "true" ]; then
   echo "Enabling periodic reloads of nginx"
   cron -f &
-  echo "0 */6 * * * /etc/init.d/nginx reload" > /root/nginx-reload
+  echo "0 */2 * * * /etc/init.d/nginx reload" > /root/nginx-reload
   chmod +x /root/nginx-reload
   cp /root/nginx-reload /etc/cron.d/nginx-reload
 fi
