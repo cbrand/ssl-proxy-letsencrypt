@@ -66,7 +66,7 @@ if [ -n "${ENABLE_PERIODIC_NGINX_RELOAD+1}" ] && [ "${ENABLE_PERIODIC_NGINX_RELO
   cron -f &
   echo "0 */6 * * * /etc/init.d/nginx reload" > /root/nginx-reload
   chmod +x /root/nginx-reload
-  crontab /root/nginx-reload
+  cp /root/nginx-reload /etc/cron.d/nginx-reload
 fi
 
 # If certificate renewals are not excluded
@@ -75,7 +75,7 @@ if [ -z "${NO_CERT_REFRESH+x}" ]; then
   cron -f &
   echo "`shuf -i 0-59 -n 1` `shuf -i 1-5 -n 1` * * * /usr/src/renew-cert.sh" > /root/renew-cert
   chmod +x /root/renew-cert
-  crontab /root/renew-cert
+  cp /root/renew-cert /etc/cron.d/renew-cert
 fi
 
 # If the SERVICE_HOST_ENV_NAME and SERVICE_PORT_ENV_NAME vars are provided,
