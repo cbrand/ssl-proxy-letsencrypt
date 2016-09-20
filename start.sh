@@ -111,9 +111,6 @@ fi
 # Tell nginx the address and port of the service to proxy to
 sed -i "s/{{TARGET_SERVICE}}/${TARGET_SERVICE}/g;" /etc/nginx/conf.d/proxy.conf
 
-echo "Setting resolver nameservers..."
-echo resolver $(awk 'BEGIN{ORS=" "} $1=="nameserver" {print $2}' /etc/resolv.conf) ";" > /etc/nginx/conf.d/resolvers.conf
-
 echo "Requesting certificate..."
 ./start-cert.sh || exit 1
 
@@ -124,6 +121,9 @@ ln -s /etc/letsencrypt/live/$cert_first/privkey.pem /etc/secrets/proxykey
 
 # Generate dhparams, this image expects it as part of secret
 /usr/bin/openssl dhparam -out /etc/secrets/dhparam 2048
+
+echo "Starting dnsmasq in the background"
+nohup /usr/bin/go-dnsmasq --listen "127.0.0.1:53" --default-resolver --enable-search --hostsfile=/etc/hosts &
 
 echo "Starting nginx..."
 nginx -g 'daemon off;'

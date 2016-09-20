@@ -23,20 +23,21 @@ RUN rm /etc/nginx/conf.d/*.conf
 
 WORKDIR /usr/src
 
-ADD start.sh /usr/src/
-ADD nginx/nginx.conf /etc/nginx/
-ADD nginx/proxy*.conf /usr/src/
-
-ENTRYPOINT ./start.sh
-
 # https://letsencrypt.org/howitworks/#installing-lets-encrypt
 #ADD https://github.com/letsencrypt/letsencrypt/archive/master.zip /opt/letsencrypt
+
 ADD letsencrypt /opt/letsencrypt
 
 # Does a lot of package installations that we don't want at runtime.
 # Prints a "No installers" error but that's normal.
 RUN cd /opt/letsencrypt \
   && ./letsencrypt-auto; exit 0
+
+ADD start.sh /usr/src/
+ADD nginx/nginx.conf /etc/nginx/
+ADD nginx/proxy*.conf /usr/src/
+
+ENTRYPOINT ./start.sh
 
 RUN ln -s /root/.local/share/letsencrypt/bin/letsencrypt /usr/local/bin/letsencrypt
 
@@ -51,3 +52,7 @@ RUN mkdir -p /usr/share/nginx/proxy-root
 
 ADD start-cert.sh /usr/src/
 ADD renew-cert.sh /usr/src/
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ADD go-dnsmasq /usr/bin/go-dnsmasq
+RUN chmod +x /usr/bin/go-dnsmasq
