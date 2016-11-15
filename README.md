@@ -218,3 +218,11 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     between 1:00 to 5:59 local time. If no certificate renewal should be
     requested you can disable this behavior by setting the environment variable
     `NO_CERT_REFRESH` to `true`.
+
+9. **GZIP compression**
+    Due to the [BREACH](https://en.wikipedia.org/wiki/BREACH_(security_exploit)) 
+    attack GZIP compression is disabled by default. This is however a huge performance
+    penalty. If you use the SSL compression to only serve static files and can guarantee
+    that you're not storing any cookies or use some other kind of mitigation described
+    [here](https://blog.qualys.com/ssllabs/2013/08/07/defending-against-the-breach-attack), 
+    you can enable GZIP by setting the environment variable `ENABLE_GZIP` to `true`.
