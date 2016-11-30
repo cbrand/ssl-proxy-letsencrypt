@@ -14,6 +14,9 @@
 
 mkdir -p /etc/secrets
 
+echo "Requesting certificate..."
+./start-cert.sh || exit 1
+
 # Env says we're using SSL
 if [ -n "${ENABLE_SSL+1}" ] && [ "${ENABLE_SSL,,}" = "true" ]; then
   echo "Enabling SSL..."
@@ -113,9 +116,6 @@ fi
 
 # Tell nginx the address and port of the service to proxy to
 sed -i "s/{{TARGET_SERVICE}}/${TARGET_SERVICE}/g;" /etc/nginx/conf.d/proxy.conf
-
-echo "Requesting certificate..."
-./start-cert.sh || exit 1
 
 # Place cert where this image expects it
 cert_first=$(echo $cert_domains | awk '{print $1}')

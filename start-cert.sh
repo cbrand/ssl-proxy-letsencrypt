@@ -23,7 +23,12 @@ if [ -n "${LETSENCRYPT_ENDPOINT+1}" ]; then
   echo "server = $LETSENCRYPT_ENDPOINT" >> /etc/letsencrypt/cli.ini
 fi
 
+cp /usr/src/nginx_request_ssl.conf /etc/nginx/conf.d/proxy.conf
+nginx
 /usr/local/bin/letsencrypt certonly \
-  --text --renew-by-default --agree-tos --standalone \
+  --text --renew-by-default --agree-tos --webroot \
+  --webroot-path /usr/share/nginx/proxy-root \
   $domain_args \
   --email=$EMAIL
+nginx -s stop
+rm /etc/nginx/conf.d/proxy.conf

@@ -15,7 +15,7 @@
 #
 # VERSION   0.0.1
 
-FROM nginx
+FROM nginx:1.11.6
 
 MAINTAINER Christoph Brand
 
@@ -35,6 +35,7 @@ RUN cd /opt/letsencrypt \
 
 ADD start.sh /usr/src/
 ADD nginx/nginx.conf /etc/nginx/
+ADD nginx/nginx_request_ssl.conf /usr/src/
 ADD nginx/proxy*.conf /usr/src/
 
 ENTRYPOINT ./start.sh
