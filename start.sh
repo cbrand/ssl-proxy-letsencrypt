@@ -119,14 +119,21 @@ sed -i "s/{{TARGET_SERVICE}}/${TARGET_SERVICE}/g;" /etc/nginx/conf.d/proxy.conf
 
 # Place cert where this image expects it
 cert_first=$(echo $cert_domains | awk '{print $1}')
-ln -s /etc/letsencrypt/live/$cert_first/fullchain.pem /etc/secrets/proxycert
-ln -s /etc/letsencrypt/live/$cert_first/privkey.pem /etc/secrets/proxykey
+CERT_FILE=/etc/letsencrypt/live/${cert_first}/fullchain.pem
+CERT_KEYFILE=/etc/letsencrypt/live/${cert_first}/privkey.pem
 
-# Generate dhparams, this image expects it as part of secret
-/usr/bin/openssl dhparam -out /etc/secrets/dhparam 2048
+if [ -f ${CERT_FILE} ]; then
+    ln -s ${CERT_FILE} /etc/secrets/proxycert
+    ln -s ${CERT_KEYFILE} /etc/secrets/proxykey
 
-echo "Starting dnsmasq in the background"
-nohup /usr/bin/go-dnsmasq --listen "127.0.0.1:53" --default-resolver --enable-search --hostsfile=/etc/hosts &
+    # Generate dhparams, this image expects it as part of secret
+    /usr/bin/openssl dhparam -out /etc/secrets/dhparam 2048
 
-echo "Starting nginx..."
-nginx -g 'daemon off;'
+    echo "Starting dnsmasq in the background"
+    nohup /usr/bin/go-dnsmasq --listen "127.0.0.1:53" --default-resolver --enable-search --hostsfile=/etc/hosts &
+
+    echo "Starting nginx..."
+    nginx -g 'daemon off;'
+else
+    exit 1;
+fi
