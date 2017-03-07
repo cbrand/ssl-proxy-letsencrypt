@@ -1,5 +1,3 @@
-# Copyright 2015 Google Inc. All rights reserved.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 #you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -45,11 +43,6 @@ RUN ln -s /root/.local/share/letsencrypt/bin/letsencrypt /usr/local/bin/letsencr
 RUN apt-get update && apt-get install -y cron
 
 RUN mkdir -p /usr/share/nginx/proxy-root
-
-# Commented out because we don't really want defaults
-#ENV cert_domains
-#ENV cert_email
-#ENV LETSENCRYPT_ENDPOINT
 
 ADD start-cert.sh /usr/src/
 ADD renew-cert.sh /usr/src/

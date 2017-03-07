@@ -66,19 +66,19 @@ fi
 # If a periodic reload should be implemented
 if [ -n "${ENABLE_PERIODIC_NGINX_RELOAD+1}" ] && [ "${ENABLE_PERIODIC_NGINX_RELOAD,,}" = "true" ]; then
   echo "Enabling periodic reloads of nginx"
-  cron -f &
+  cron
   echo "0 */2 * * * /etc/init.d/nginx reload" > /root/nginx-reload
-  chmod +x /root/nginx-reload
   cp /root/nginx-reload /etc/cron.d/nginx-reload
+  chmod 0644 /etc/cron.d/nginx-reload
 fi
 
 # If certificate renewals are not excluded
 if [ -z "${NO_CERT_REFRESH+x}" ]; then
   echo "Enabling certificate renewal checks every day"
-  cron -f &
+  cron
   echo "`shuf -i 0-59 -n 1` `shuf -i 1-5 -n 1` * * * /usr/src/renew-cert.sh" > /root/renew-cert
-  chmod +x /root/renew-cert
   cp /root/renew-cert /etc/cron.d/renew-cert
+  chmod 0644 /etc/cron.d/nginx-reload
 fi
 
 # If the SERVICE_HOST_ENV_NAME and SERVICE_PORT_ENV_NAME vars are provided,
