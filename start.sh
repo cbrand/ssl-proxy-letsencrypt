@@ -111,7 +111,7 @@ if [ -n "${OVERWRITE_PROXY_HOST+1}" ]; then
   sed -i "s/proxy_set_header.*Host.*;/proxy_set_header Host \"${OVERWRITE_PROXY_HOST}\";/g;" /etc/nginx/conf.d/proxy.conf
 fi
 if [ -n "${ENABLE_GZIP+1}" ]; then
-  sed -i "s/\#gzip on;/gzip on; \\n   gzip_proxied any; \\n   gzip_types text\/css text\/javascript text\/xml text\/plain application\/javascript application\/x-javascript application\/json;/g;" /etc/nginx/nginx.conf
+  sed -i "s/\#gzip on;/gzip on; \\n   gzip_proxied any; \\n   gzip_types *;/g;" /etc/nginx/nginx.conf
 fi
 
 # Tell nginx the address and port of the service to proxy to
