@@ -82,7 +82,7 @@ if [ -z "${NO_CERT_REFRESH+x}" ]; then
   cron
   echo "`shuf -i 0-59 -n 1` `shuf -i 1-5 -n 1` * * * /usr/src/renew-cert.sh" > /root/renew-cert
   cp /root/renew-cert /etc/cron.d/renew-cert
-  chmod 0644 /etc/cron.d/nginx-reload
+  chmod 0644 /etc/cron.d/renew-cert
 fi
 
 # If the SERVICE_HOST_ENV_NAME and SERVICE_PORT_ENV_NAME vars are provided,
