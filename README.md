@@ -144,7 +144,7 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
       -v /path/to/secrets/htpasswd:/etc/secrets/htpasswd \
       nginx-ssl-proxy
     ```
-    
+
     If you are running in an environment where file based acces sin this regard
     is not possible. You can also specify a htpasswd content via the `HTPASSWD_CONTENT`
     environment variable (in base64). It will be pushed on build time to the correct location.
@@ -154,10 +154,10 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     The container does by default not allow any frames to be opened due to
     security issues doing this. While this is a recommended default behavior,
     it might break certain applications.
-    
+
     If you are encountering issues you can either turn of the frame denial
     completely by passing the `ENABLE_FRAMES` environment variable to it:
-    
+
     ```shell
     docker run \
       -e ENABLE_SSL=true \
@@ -169,11 +169,11 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
       -v /path/to/secrets/htpasswd:/etc/secrets/htpasswd \
       nginx-ssl-proxy
     ```
-    
+
     Alternatively if you only need frames from your own domain you can also
     use the [SAMEORIGIN](https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options) policy
     through setting the `ENABLE_FRAMES_SAMEORIGIN` variable to true.
-    
+
     ```shell
     docker run \
       -e ENABLE_SSL=true \
@@ -187,11 +187,11 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     ```
 
 5. **Proxy to HTTPs endpoint**
- 
+
     It might be necessary to forward an already SSL protected stream.
     To enable an upstream HTTPs endpoint the environment variable
     `ENABLE_UPSTREAM_SSL` has to be set to `true`.
-    
+
     This will then configure the proxy to terminate an incoming SSL
     connection and rebuild a new one with the requested certificate.
     Of course, when the environment variable is set you also have
@@ -220,9 +220,14 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     `NO_CERT_REFRESH` to `true`.
 
 9. **GZIP compression**
-    Due to the [BREACH](https://en.wikipedia.org/wiki/BREACH_(security_exploit)) 
+    Due to the [BREACH](https://en.wikipedia.org/wiki/BREACH_(security_exploit))
     attack GZIP compression is disabled by default. This is however a huge performance
     penalty. If you use the SSL compression to only serve static files and can guarantee
     that you're not storing any cookies or use some other kind of mitigation described
-    [here](https://blog.qualys.com/ssllabs/2013/08/07/defending-against-the-breach-attack), 
+    [here](https://blog.qualys.com/ssllabs/2013/08/07/defending-against-the-breach-attack),
     you can enable GZIP by setting the environment variable `ENABLE_GZIP` to `true`.
+
+10. ***Body Size***
+    To be able to upload large files and handle other large file contexts you can modify
+    the maximum body size of client requests via the environment variable `CLIENT_MAX_BODY_SIZE`.
+    The default of this is `20M` and thus fits 20 megabytes of data.
