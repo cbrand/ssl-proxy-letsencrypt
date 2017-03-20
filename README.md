@@ -149,6 +149,9 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     is not possible. You can also specify a htpasswd content via the `HTPASSWD_CONTENT`
     environment variable (in base64). It will be pushed on build time to the correct location.
 
+    As an alternative you are also able to set a `HTPASSWD_USERNAME` and `HTPASSWD_PASSWORD` variable.
+    If both are set the HTPASSWD file gets generated automatically.
+
 4. **Enabling frames**
 
     The container does by default not allow any frames to be opened due to

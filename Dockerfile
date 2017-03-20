@@ -18,6 +18,7 @@ FROM nginx:1.11
 MAINTAINER Christoph Brand
 
 RUN rm /etc/nginx/conf.d/*.conf
+RUN apt-get update && apt-get install -y apache2-utils && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src
 

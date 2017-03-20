@@ -32,6 +32,12 @@ if [ -n "${ENABLE_BASIC_AUTH+1}" ] && [ "${ENABLE_BASIC_AUTH,,}" = "true" ]; the
   sed -i "s/#auth_basic/auth_basic/g;" /etc/nginx/conf.d/proxy.conf
 fi
 
+# if HTPASSWD_USERNAME and a HTPASSWD_PASSWORD is provided generate the content and put it to /etc/secrets/htpasswd
+if [ -n "${HTPASSWD_USERNAME+1}" ] && [ -n "${HTPASSWD_PASSWORD+1}" ]; then
+  echo "Adding htpasswd information for user ${HTPASSWD_USERNAME}"
+  htpasswd -nb "${HTPASSWD_USERNAME}" "${HTPASSWD_PASSWORD}" > /etc/secrets/htpasswd
+fi
+
 # If a htpasswd content is provided, put the content of the files to /etc/secrets/htpasswd
 if [ -n "${HTPASSWD_CONTENT+1}" ]; then
   echo "Adding htpasswd file"
