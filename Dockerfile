@@ -13,7 +13,7 @@
 #
 # VERSION   0.0.1
 
-FROM nginx:1.11
+FROM nginx:1.13
 
 MAINTAINER Christoph Brand
 
