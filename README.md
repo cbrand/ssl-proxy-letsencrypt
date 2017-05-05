@@ -234,3 +234,10 @@ To run an SSL termination proxy you must have an existing SSL certificate and ke
     To be able to upload large files and handle other large file contexts you can modify
     the maximum body size of client requests via the environment variable `CLIENT_MAX_BODY_SIZE`.
     The default of this is `20M` and thus fits 20 megabytes of data.
+
+11. ***Enable Proxy Protocol***
+    To enable the [proxy protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)
+    on the receiving side you have to set the `ENABLE_PROXY_PROTOCOL` variable to `true`.
+    This will enable the receiving of proxy protocol information for the server.
+    To specify the IPs where the proxy protocol source information should be taken for further
+    processing you can use the `PROXY_PROTOCOL_BASE_PROXY` environment variable.

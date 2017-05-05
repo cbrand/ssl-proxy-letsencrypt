@@ -14,6 +14,13 @@
 
 mkdir -p /etc/secrets
 
+# If the proxy is receiving the proxy protocol
+if [ -n "${ENABLE_PROXY_PROTOCOL+1}" ] && [ "${ENABLE_PROXY_PROTOCOL,,}" = "true" ]; then
+  echo "Enabling proxy protocol support"
+  sed -i "s/listen[ ]+80[ ]+;/listen 80 proxy_protocol;/g;" /usr/src/proxy_ssl.conf /usr/src/proxy_nossl.conf /usr/src/nginx_request_ssl.conf
+  sed -i "s/listen[ ]+443[ ]+;/listen 443 proxy_protocol;/g;" /usr/src/proxy_ssl.conf /usr/src/proxy_nossl.conf /usr/src/nginx_request_ssl.conf
+fi
+
 echo "Requesting certificate..."
 ./start-cert.sh || exit 1
 
@@ -122,6 +129,17 @@ if [ -n "${OVERWRITE_PROXY_HOST+1}" ]; then
 fi
 if [ -n "${ENABLE_GZIP+1}" ]; then
   sed -i "s/\#gzip on;/gzip on; \\n   gzip_proxied any; \\n   gzip_types *;/g;" /etc/nginx/nginx.conf
+fi
+
+if [ -n "${PROXY_PROTOCOL_BASE_PROXY+1}" ] && [ "${PROXY_PROTOCOL_BASE_PROXY,,}" = "true" ]; then
+  echo "Setting the base proxy to ${PROXY_PROTOCOL_BASE_PROXY}."
+  sed -i "s/\#[^ ]*set_real_ip_from[^;]*;/set_real_ip_from ${PROXY_PROTOCOL_BASE_PROXY};/g"
+fi
+
+if [ -n "${ENABLE_PROXY_PROTOCOL+1}" ] && [ "${ENABLE_PROXY_PROTOCOL,,}" = "true" ]; then
+  echo "Setting IP header to use the proxy protocol information"
+  sed -i "s/proxy_set_header[ ]+X-Real-IP[ ]+\$proxy_protocol_addr;/proxy_set_header X-Real-IP       \$proxy_protocol_addr;/g"
+  sed -i "s/proxy_set_header[ ]+X-Forwarded-For[ ]+\$proxy_protocol_addr;/proxy_set_header X-Forwarded-For \$proxy_protocol_addr;/g"
 fi
 
 # Tell nginx the address and port of the service to proxy to
