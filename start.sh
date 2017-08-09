@@ -14,6 +14,11 @@
 
 mkdir -p /etc/secrets
 
+if [ -z "${ENABLE_SSL}" ]; then
+    echo "Defaulting to enable SSL"
+    ENABLE_SSL="true"
+fi  
+
 # If the proxy is receiving the proxy protocol
 if [ -n "${ENABLE_PROXY_PROTOCOL+1}" ] && [ "${ENABLE_PROXY_PROTOCOL,,}" = "true" ]; then
   echo "Enabling proxy protocol support"
@@ -21,11 +26,11 @@ if [ -n "${ENABLE_PROXY_PROTOCOL+1}" ] && [ "${ENABLE_PROXY_PROTOCOL,,}" = "true
   sed -i "s/listen\s*443[^;]*;/listen 443 proxy_protocol;/g;" /usr/src/proxy_ssl.conf /usr/src/proxy_nossl.conf /usr/src/nginx_request_ssl.conf
 fi
 
-echo "Requesting certificate..."
-./start-cert.sh || exit 1
-
 # Env says we're using SSL
-if [ -n "${ENABLE_SSL+1}" ] && [ "${ENABLE_SSL,,}" = "true" ]; then
+if [ "${ENABLE_SSL,,}" = "true" ]; then
+  echo "Requesting certificate..."
+  ./start-cert.sh || exit 1
+
   echo "Enabling SSL..."
   cp /usr/src/proxy_ssl.conf /etc/nginx/conf.d/proxy.conf
 else
@@ -90,7 +95,7 @@ if [ -n "${CLIENT_MAX_BODY_SIZE+1}" ]; then
 fi
 
 # If certificate renewals are not excluded
-if [ -z "${NO_CERT_REFRESH+x}" ]; then
+if [ -z "${NO_CERT_REFRESH+x}" ] && [ "${ENABLE_SSL,,}" = "true" ]; then
   echo "Enabling certificate renewal checks every day"
   cron
   echo "`shuf -i 0-59 -n 1` `shuf -i 1-5 -n 1` * * * root /usr/src/renew-cert.sh" > /root/renew-cert
@@ -152,18 +157,20 @@ cert_first=$(echo $cert_domains | awk '{print $1}')
 CERT_FILE=/etc/letsencrypt/live/${cert_first}/fullchain.pem
 CERT_KEYFILE=/etc/letsencrypt/live/${cert_first}/privkey.pem
 
-if [ -f ${CERT_FILE} ]; then
-    ln -s ${CERT_FILE} /etc/secrets/proxycert
-    ln -s ${CERT_KEYFILE} /etc/secrets/proxykey
+if [ "${ENABLE_SSL,,}" = "true" ]; then
+  if [ -f ${CERT_FILE} ]; then
+      ln -s ${CERT_FILE} /etc/secrets/proxycert
+      ln -s ${CERT_KEYFILE} /etc/secrets/proxykey
 
-    # Generate dhparams, this image expects it as part of secret
-    /usr/bin/openssl dhparam -out /etc/secrets/dhparam 2048
-
-    echo "Starting dnsmasq in the background"
-    nohup /usr/bin/go-dnsmasq --listen "127.0.0.1:53" --default-resolver --enable-search --hostsfile=/etc/hosts &
-
-    echo "Starting nginx..."
-    nginx -g 'daemon off;'
-else
-    exit 1;
+      # Generate dhparams, this image expects it as part of secret
+      /usr/bin/openssl dhparam -out /etc/secrets/dhparam 2048
+  else
+      exit 1;
+  fi
 fi
+
+echo "Starting dnsmasq in the background"
+nohup /usr/bin/go-dnsmasq --listen "127.0.0.1:53" --default-resolver --enable-search --hostsfile=/etc/hosts &
+
+echo "Starting nginx..."
+nginx -g 'daemon off;'
