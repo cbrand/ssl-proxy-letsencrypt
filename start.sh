@@ -78,7 +78,7 @@ fi
 # If the upstream is ssl secured
 if [ -n "${ENABLE_UPSTREAM_SSL+1}" ] && [ "${ENABLE_UPSTREAM_SSL,,}" = "true" ]; then
   echo "Accessing the upstream server via (https)"
-  sed -i "s/http:\/\/{{TARGET_SERVICE}};/https:\/\/{{TARGET_SERVICE}};/g;" /etc/nginx/conf.d/proxy.conf
+  sed -i "s/\"http:\/\/{{TARGET_SERVICE}}\";/\"https:\/\/{{TARGET_SERVICE}}\";/g;" /etc/nginx/conf.d/proxy.conf
 fi
 
 # If a periodic reload should be implemented
